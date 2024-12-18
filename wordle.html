@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Game</title>
+    <style>
+        body {
+            background-color: tan;
+            color: #1F3A58;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            color: #1F3A58;
+        }
+
+        #hint {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .board {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background-color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .cell.correct {
+            background-color: #6aaa64;
+        }
+
+        .cell.wrong {
+            background-color: #787c7e;
+        }
+
+        .cell.present {
+            background-color: #c9b458;
+        }
+
+        .cell:focus {
+            outline: none;
+        }
+
+        .button {
+            background-color: #1F3A58;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .letter-bank {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .letter-bank span {
+            margin: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .letter-bank span.selected {
+            background-color: #1F3A58;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wordle Game</h1>
+    <div id="hint">Hint: It's a 5-letter word related to construction!</div>
+    <div class="board" id="game-board"></div>
+    <button id="submit-btn" class="button">Submit Guess</button>
+    <button id="reset-btn" class="button hidden">Try Again</button>
+    <div class="letter-bank" id="letter-bank"></div>
+
+    <script>
+        const wordList = [
+            { word: "BRICK", hint: "Common material for building walls." },
+            { word: "STONE", hint: "A strong material often used for flooring." },
+            { word: "STEEL", hint: "A strong metal used in construction." },
+            { word: "FRAME", hint: "The basic structure of a building." },
+            { word: "PLUMB", hint: "Relates to plumbing or pipes." },
+            { word: "ROOFY", hint: "A material used to cover the top of buildings." },
+            { word: "DOORS", hint: "Used for entry into a building." }
+        ];
+        
+        let correctWord;
+        let currentHint;
+        let attempts = 0;
+        const maxAttempts = 7;
+        let currentGuess = ['', '', '', '', ''];
+
+        // Setup game board (5x7 grid)
+        function setupBoard() {
+            const board = document.getElementById('game-board');
+            board.innerHTML = ''; // Clear any existing board
+            for (let i = 0; i < maxAttempts; i++) {  // 7 rows for 7 guesses
+                const row = document.createElement('div');
+                row.classList.add('row');
+                for (let j = 0; j < 5; j++) {  // 5 cells for 5 letters in each guess
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        // Handle the click event for selecting letters from the letter bank
+        function selectLetter(letter) {
+            if (attempts < maxAttempts) {
+                for (let i = 0; i < 5; i++) {
+                    if (currentGuess[i] === '') {
+                        currentGuess[i] = letter;
+                        updateBoard();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Update the game board with the current guess
+        function updateBoard() {
+            const cells = document.querySelectorAll('.row')[attempts].children;
+            for (let i = 0; i < 5; i++) {
+                cells[i].textContent = currentGuess[i];
+            }
+        }
+
+        // Handle the guess submission
+        function submitGuess() {
+            const guess = currentGuess.join('');
+            if (guess.length < 5) {
+                alert('Please complete your guess!');
+                return;
+            }
+
+            checkGuess(guess);
+            attempts++;
+            currentGuess = ['', '', '', '', ''];
+
+            if (attempts < maxAttempts) {
+                // Reset the letter bank for the next guess
+                setupLetterBank();
+            } else {
+                endGame("You've run out of attempts! Try again loser!");
+            }
+        }
+
+        // Check the guess and provide feedback (correct, present, wrong)
+        function checkGuess(guess) {
+            const row = document.querySelectorAll('.row')[attempts];
+            const correctWordArray = correctWord.split('');
+            for (let i = 0; i < 5; i++) {
+                const cell = row.children[i];
+                const letter = guess[i];
+                if (letter === correctWordArray[i]) {
+                    cell.classList.add('correct'); // Correct letter in correct position
+                } else if (correctWordArray.includes(letter)) {
+                    cell.classList.add('present'); // Correct letter in wrong position
+                } else {
+                    cell.classList.add('wrong'); // Incorrect letter
+                }
+            }
+
+            // Check for win
+            if (guess === correctWord) {
+                endGame("You got it! I'm impressed!");
+            }
+        }
+
+        // End the game and show the result
+        function endGame(message) {
+            alert(message);
+            document.getElementById('reset-btn').classList.remove('hidden');
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        // Reset the game
+        function resetGame() {
+            // Select a new word and update hint
+            const newWordObj = wordList[Math.floor(Math.random() * wordList.length)];
+            correctWord = newWordObj.word;
+            currentHint = newWordObj.hint;
+
+            attempts = 0;
+            currentGuess = ['', '', '', '', ''];
+            setupBoard();
+            setupLetterBank();
+            document.getElementById('reset-btn').classList.add('hidden');
+            document.getElementById('submit-btn').disabled = false;
+
+            // Update hint
+            document.getElementById('hint').textContent = `Hint: ${currentHint}`;
+        }
+
+        // Show letter bank
+        function setupLetterBank() {
+            const letterBank = document.getElementById('letter-bank');
+            letterBank.innerHTML = '';
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+                const letterSpan = document.createElement('span');
+                letterSpan.textContent = letter;
+                letterSpan.addEventListener('click', () => {
+                    letterSpan.classList.toggle('selected');
+                    selectLetter(letter);
+                });
+                letterBank.appendChild(letterSpan);
+            });
+        }
+
+        // Event listeners
+        document.getElementById('submit-btn').addEventListener('click', submitGuess);
+        document.getElementById('reset-btn').addEventListener('click', resetGame);
+
+        // Initialize game
+        resetGame();
+    </script>
+</body>
+</html>
+

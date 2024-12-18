@@ -1,0 +1,125 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5deb3; /* Tan background */
+    color: #333; /* Neutral text color */
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1, h2 {
+    color: #082154; /* Blue accents */
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.2em;
+    line-height: 1.5;
+    margin: 10px auto;
+    max-width: 600px;
+}
+
+a {
+    color: #082154;
+    text-decoration: none;
+}
+
+a.button {
+    display: inline-block;
+    background-color: #082154;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+a.button:hover {
+    background-color: #003399;
+}
+
+/* Image Styling */
+.gallery-img {
+    width: 45%;
+    margin: 10px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styling */
+section {
+    margin: 30px auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #082154;
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+footer {
+    background-color: #082154;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* List Styling */
+ol, ul {
+    text-align: left;
+    margin: 10px auto;
+    display: inline-block;
+}
+
+li {
+    margin-bottom: 5px;
+}
+section {
+    margin: 30px auto;
+    padding: 20px;
+    text-align: left;
+    max-width: 800px;
+    background-color: #ffffff80; /* White for contrast */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h2, h3 {
+    color: #003399;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-type: square;
+    margin: 10px 20px;
+}
+
+li {
+    margin: 8px 0;
+    font-size: 1.1em;
+}
+
+strong {
+    color: #333;
+}
+
+footer {
+    background-color: #f6e6c7;
+    text-decoration-color: rgb(255, 255, 255);
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+footer.back-to-top{
+    text-decoration-color: white; /* Make the text white */
+    text-decoration: none; 
+    font-weight: bolder;
+    padding: 5px 10px; 
+    background-color: #ffffff; 
+    border-radius: 5px; 
+}
